@@ -134,6 +134,19 @@ public function destroy($id)
         return redirect(route('admin.user.index'))->with('success', 'User has been deleted.');
     }
 
+
+/* -------------------------- Join Multiple Tables -------------------------- */
+public function index()
+    {
+        DB::table('applications')
+            ->select('applications.payment_status', 'jobs.job_subtitle', 'job_companies.job_category')
+            ->join('jobs', 'jobs.id', '=', 'applications.job_id')
+            ->join('job_companies', 'job_companies.id', '=', 'jobs.company_id')
+            ->where(['job_category' => 'govt', 'payment_status' => 'pending'])
+            ->count();
+        return view('web.backend.admin.sections.dashboard');
+    }
+
 /* -------------------------------------------------------------------------- */
 /*                               Api Controller                               */
 /* -------------------------------------------------------------------------- */
@@ -367,3 +380,33 @@ public function expired()
 
     </div>
 @endsection
+
+
+/* -------------------------------------------------------------------------- */
+/*                                 Pagination                                 */
+/* -------------------------------------------------------------------------- */
+
+<div class="row m-5">
+                <div class="col-sm-6 col-sm-offset-5"></div>
+                {{ $users->render() }}
+</div>
+
+
+/* -------------------------------------------------------------------------- */
+/*                                    other                                   */
+/* -------------------------------------------------------------------------- */
+
+<td class="text-center">
+    @if (isset($application['job']['company']))
+        {{ $application['job']['company']->company_name }}
+
+    @else
+        <small class="text-warning">
+            << something wrong>>
+        </small>
+    @endif
+</td>
+
+
+Password:
+$2y$10$WZ09gv2u2k0UROI64trKSe.Lc5XnOuU7oaawlM6yXBJC9FipzKS5m
